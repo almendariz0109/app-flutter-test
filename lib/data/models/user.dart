@@ -18,12 +18,12 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'] ?? '',
-      name: json['NAME'] ?? '',
-      cdStall: (json['CD_STALL'] != null)
-        ? double.tryParse(json['CD_STALL'].toString()) ?? 0.0
+      name: json['name'] ?? '',
+      cdStall: (json['cd_stall'] != null)
+        ? double.tryParse(json['cd_stall'].toString()) ?? 0.0
         : 0.0,
-      dsStall: json['DS_STALL'] ?? '',
-      email: json['EMAIL'] ?? '',
+      dsStall: json['ds_stall'] ?? '',
+      email: json['email'] ?? '',
       // photoBase64: json['PHOTO'] ?? '',
     );
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/user.dart';
-import '../../services/user_service.dart';
+import '../../../data/models/user.dart';
+import '../../../core/services/user_service.dart';
 
 class ProfilePage extends StatefulWidget {
   final String login;
@@ -11,13 +11,33 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
   late Future<User?> _userFuture;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _userFuture = UserService().fetchUserDetails(widget.login);
+  }
+
+  void _loadUser() {
+    _userFuture = UserService().fetchUserDetails(widget.login);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      setState(() {
+        _loadUser(); // recarga el perfil al volver de fondo
+      });
+    }
   }
 
   @override

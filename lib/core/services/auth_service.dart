@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import '../models/user.dart';
+import '../../data/models/user.dart';
 
 // Cambia la IP según tu entorno
-const String baseUrl = 'http://10.0.2.2:3000/api'; // Emulador Android
-const String baseUrl2 = 'http://localhost:3000/api';
+final String baseUrl = 'http://192.168.8.172:3000/api'; // Emulador Android
+// const String baseUrl = 'http://localhost:3000/api'; // Emulador Web Local
 
 class AuthService {
   Future<User?> login(String username, String password) async {
-    final url = Uri.parse('$baseUrl2/login');
+    final url = Uri.parse('$baseUrl/login');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},

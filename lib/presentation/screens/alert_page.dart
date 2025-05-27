@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import '../models/detailsuggestion.dart';
-import '../models/suggestion.dart';
-import '../services/alert_service.dart';
-import '../screens/alerts/alert_details_page.dart';
+import '../../data/models/suggestion.dart';
+import '../../core/services/alert_service.dart';
+import 'alerts/alert_details_page.dart';
 
 class AlertPage extends StatefulWidget {
   const AlertPage({super.key});
@@ -26,7 +25,6 @@ class _AlertPageState extends State<AlertPage> {
 
   final AlertService _alertService = AlertService();
   List<Suggestion> _suggestions = [];
-  List<SuggestionDetail> _details = [];
   bool _isLoading = false;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
@@ -208,89 +206,105 @@ void _viewDetails(String codProd) async {
         s.codProd.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
 
     if (filtered.isEmpty) return const Text('No se encontraron coincidencias');
-    
-    return Column(
-      children: filtered.map((s) {
-        final isExpanded = _expandedStates[s.codProd] ?? false;
 
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade300,
-                blurRadius: 4,
-                offset: const Offset(0, 2),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Cabecera fija
+        Container(
+          color: Colors.indigo[100],
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          child: Row(
+            children: const [
+              Expanded(
+                flex: 2,
+                child: Text(
+                  'Código',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
+              Expanded(
+                flex: 3,
+                child: Text(
+                  'Descripción',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(width: 48), // espacio para el botón expandir
             ],
           ),
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          child: Theme(
-            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-            child: ExpansionTile(
-              key: PageStorageKey<String>(s.codProd),
-              tilePadding: const EdgeInsets.symmetric(horizontal: 16.0),
-              title: _buildInfoTile('Código', s.codProd),
-              subtitle: _buildInfoTile('Descripción', s.desProd),
-              trailing: Icon(
-                isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                color: Colors.black,
-              ),
-              childrenPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              onExpansionChanged: (expanded) {
-                setState(() {
-                  _expandedStates[s.codProd] = expanded;
-                });
-              },
+        ),
+
+        // Lista scrollable con resultados
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: filtered.length,
+          itemBuilder: (context, index) {
+            final s = filtered[index];
+            final isExpanded = _expandedStates[s.codProd] ?? false;
+
+            return Column(
               children: [
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(8),
-                      bottomRight: Radius.circular(8),
-                    ),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  color: Colors.grey[100],
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                  child: Row(
                     children: [
-                      _buildInfoTile('Unidad', s.cdMu),
-                      _buildInfoTile('VEN', s.descCurveXyz),
-                      _buildInfoTile('Sug. 0501', s.qtSuggesEnd0501),
-                      _buildInfoTile('Sug. 0599', s.qtSuggesEnd0599),
-                      _buildInfoTile('Sug. 0601', s.qtSuggesEnd0601),
-                      _buildInfoTile('Sug. 0699', s.qtSuggesEnd0699),
-                      _buildInfoTile('Sug. 0701', s.qtSuggesEnd0701),
-                      _buildInfoTile('Sug. 0799', s.qtSuggesEnd0799),
-                      _buildInfoTile('Sug. 9201', s.qtSuggesEnd9201),
-                      _buildInfoTile('Sug. 9501', s.qtSuggesEnd9501),
-                      _buildInfoTile('Sug. 9907', s.qtSuggesEnd9907),
-                      _buildInfoTile('Sugerencia Total', s.qtSuggesEnd.toString()),
-
-                      const SizedBox(height: 16),
-                      // Botones: Buscar y Limpiar
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
+                      Expanded(flex: 2, child: Text(s.codProd)),
+                      Expanded(flex: 3, child: Text(s.desProd)),
+                      IconButton(
+                        icon: Icon(
+                          isExpanded ? Icons.arrow_drop_up_rounded : Icons.arrow_drop_down_circle,
+                          color: Colors.indigo,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _expandedStates[s.codProd] = !isExpanded;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                if (isExpanded)
+                  Container(
+                    color: Colors.grey[50],
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildInfoTile('Unidad', s.cdMu),
+                        _buildInfoTile('VEN', s.descCurveXyz),
+                        _buildInfoTile('Sug. 0501', s.qtSuggesEnd0501),
+                        _buildInfoTile('Sug. 0599', s.qtSuggesEnd0599),
+                        _buildInfoTile('Sug. 0601', s.qtSuggesEnd0601),
+                        _buildInfoTile('Sug. 0699', s.qtSuggesEnd0699),
+                        _buildInfoTile('Sug. 0701', s.qtSuggesEnd0701),
+                        _buildInfoTile('Sug. 0799', s.qtSuggesEnd0799),
+                        _buildInfoTile('Sug. 9201', s.qtSuggesEnd9201),
+                        _buildInfoTile('Sug. 9501', s.qtSuggesEnd9501),
+                        _buildInfoTile('Sug. 9907', s.qtSuggesEnd9907),
+                        _buildInfoTile('Sugerencia Total', s.qtSuggesEnd.toString()),
+                        const SizedBox(height: 8),
+                        Center(
+                          child: ElevatedButton(
                             onPressed: () => _viewDetails(s.codProd),
                             style: OutlinedButton.styleFrom(
                               side: const BorderSide(color: Colors.grey),
                             ),
                             child: const Text('Ver Detalle'),
                           ),
-                        ],
-                      ),
-                    ],                   
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                const Divider(height: 1, color: Colors.grey),
               ],
-            ),
-          ),
-        );
-      }).toList(),
+            );
+          },
+        ),
+      ],
     );
   }
 

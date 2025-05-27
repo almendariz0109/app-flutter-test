@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../models/detailsuggestion.dart';
-import '../models/suggestion.dart';
+import '../../data/models/detailsuggestion.dart';
+import '../../data/models/suggestion.dart';
 
 class AlertService {
-  final String baseUrl = 'http://localhost:3000/api'; // Emulador Web
+  // final String baseUrl = 'http://localhost:3000/api'; // Emulador Web local
+  final String baseUrl = 'http://192.168.8.172:3000/api'; // Emulador Android
 
   Future<List<Suggestion>> fetchSuggestions({
     required String months,
@@ -37,9 +38,7 @@ class AlertService {
         .replace(queryParameters: {
           'codeItem': codProd,
         });
-    print('Buscando detalles para: $codProd');
     final response = await http.get(uri);
-    print('Respuesta del detalle: ${response.body}');
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final List<dynamic> results = data['data'];

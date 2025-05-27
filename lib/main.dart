@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'screens/login_page.dart';
-import 'screens/home_page.dart'; // O el que sea tu página principal
+import 'presentation/screens/login_page.dart';
+import 'presentation/screens/home_page.dart'; // O el que sea tu página principal
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
     String? login = prefs.getString('login');
 
     setState(() {
-      _initialPage = login != null ? HomePage(login: '',) : const LoginPage();
+      _initialPage = login != null ? HomePage(login: '', name: '') : const LoginPage();
     });
   }
 

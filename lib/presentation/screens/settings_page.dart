@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:prueba_login/screens/login_page.dart';
-import 'package:prueba_login/screens/settings/profile.dart';
+import 'package:prueba_login/presentation/screens/login_page.dart';
+import 'package:prueba_login/presentation/screens/settings/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {

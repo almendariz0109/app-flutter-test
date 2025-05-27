@@ -1,12 +1,14 @@
+// lib/screens/home_page.dart
 import 'package:flutter/material.dart';
-import 'dashboard_page.dart';
 import 'settings_page.dart';
 import 'alert_page.dart';
+import 'main_menu_page.dart'; // importar nueva pantalla
 
 class HomePage extends StatefulWidget {
   final String login;
+  final String name;
 
-  const HomePage({super.key, required this.login});
+  const HomePage({super.key, required this.login, required this.name});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -15,18 +17,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
-  // Lista de páginas que mostrarás en cada pestaña
-  List<Widget> get _pages =>[
-    const DashboardPage(),
+  List<Widget> get _pages => [
+    MainMenuPage(userName: widget.name), // ahora es la página principal
     const AlertPage(),
     SettingsPage(login: widget.login),
   ];
 
-  // Textos y iconos de barra de navegación
   static const List<BottomNavigationBarItem> _navItems = [
     BottomNavigationBarItem(
-      icon: Icon(Icons.dashboard_outlined),
-      activeIcon: Icon(Icons.dashboard),
+      icon: Icon(Icons.home_outlined),
+      activeIcon: Icon(Icons.home),
       label: 'Inicio',
     ),
     BottomNavigationBarItem(
@@ -50,7 +50,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Mantiene el estado de cada página
       body: IndexedStack(
         index: _currentIndex,
         children: _pages,

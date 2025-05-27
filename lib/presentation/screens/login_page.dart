@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:prueba_login/screens/home_page.dart';
-import '../services/auth_service.dart';
+import 'package:prueba_login/presentation/screens/home_page.dart';
+import '../../core/services/auth_service.dart';
+import '../../core/services/user_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,6 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _authService = AuthService();
+  final _userService = UserService();
 
   bool _isLoading = false;
   bool _obscurePassword = true;
@@ -28,10 +30,12 @@ class _LoginPageState extends State<LoginPage> {
         final user = await _authService.login(username, password);
         print("Usuario logueado: ${user?.id}");
         if (user != null) {
+        final userFull = await _userService.fetchUserDetails(user.id);   
+        print("Nombre de usuario: ${userFull?.name}");   
           if (!mounted) return;
           // Ir a la pantalla principal
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => HomePage(login: user.id)),
+            MaterialPageRoute(builder: (_) => HomePage(login: userFull!.id, name: userFull.name)),
           );
         } else {
           _showMessage('Credenciales incorrectas');
