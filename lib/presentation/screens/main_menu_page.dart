@@ -1,6 +1,6 @@
 // lib/screens/main_menu_page.dart
 import 'package:flutter/material.dart';
-import 'dashboard_page.dart';
+import 'central_warehouse_coverage_page.dart';
 import 'pending_order_page.dart';
 
 class MainMenuPage extends StatelessWidget {
@@ -35,7 +35,7 @@ class MainMenuPage extends StatelessWidget {
               _buildOption(context, 'Cobertura en el Almacen Central', Icons.dashboard, () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const DashboardPage()),
+                  MaterialPageRoute(builder: (_) => CentralWarehouseCoveragePage()),
                 );
               }),
               const SizedBox(height: 16),

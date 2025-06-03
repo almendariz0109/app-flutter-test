@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../data/models/pendingorder.dart';
+import '../../data/models/pending.order.dart';
 
 class PendingOrderService {
-  //final String baseUrl = 'http://localhost:3000/api'; // Emulador Web Local
-  final String baseUrl = 'http://192.168.8.172:3000/api'; // Emulador Android
+  final String baseUrl = 'http://localhost:3000/api'; // Emulador Web Local
+  //final String baseUrl = 'http://192.168.8.172:3000/api'; // Emulador Android
 
   Future<List<PendingOrder>> fetchPendingOrder() async {
     final uri = Uri.parse('$baseUrl/pendingOrder');

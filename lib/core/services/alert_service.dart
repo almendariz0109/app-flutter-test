@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../data/models/detailsuggestion.dart';
+import '../../data/models/detail.suggestion.dart';
 import '../../data/models/suggestion.dart';
 
 class AlertService {
-  // final String baseUrl = 'http://localhost:3000/api'; // Emulador Web local
-  final String baseUrl = 'http://192.168.8.172:3000/api'; // Emulador Android
+  final String baseUrl = 'http://localhost:3000/api'; // Emulador Web local
+  // final String baseUrl = 'http://192.168.8.172:3000/api'; // Emulador Android
 
   Future<List<Suggestion>> fetchSuggestions({
     required String months,

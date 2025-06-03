@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../data/models/detailsuggestion.dart';
+import '../../../data/models/detail.suggestion.dart';
 
 class AlertDetailsPage extends StatelessWidget {
   final List<SuggestionDetail> details;

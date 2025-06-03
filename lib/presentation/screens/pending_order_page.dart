@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/models/pendingorder.dart';
+import '../../data/models/pending.order.dart';
 import '../../core/services/pending_order_service.dart';
 
 class PendingOrderPage extends StatefulWidget {

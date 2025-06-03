@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 import '../../data/models/user.dart';
 
 // Cambia la IP según tu entorno
-final String baseUrl = 'http://192.168.8.172:3000/api'; // Emulador Android
-// const String baseUrl = 'http://localhost:3000/api'; // Emulador Web Local
+//final String baseUrl = 'http://192.168.8.172:3000/api'; // Emulador Android
+final String baseUrl = 'http://localhost:3000/api'; // Emulador Web Local
 
 class AuthService {
   Future<User?> login(String username, String password) async {
