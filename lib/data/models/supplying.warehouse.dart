@@ -1,5 +1,6 @@
 class SupplyingWarehouse {
   final String cdWarehouseGroupLabel;
+  final String cdWarehouse;
   final String dsWarehouse;
   final int idFlag;
   final int sumFlagStock;
@@ -13,6 +14,7 @@ class SupplyingWarehouse {
 
   SupplyingWarehouse({
     required this.cdWarehouseGroupLabel,
+    required this.cdWarehouse,
     required this.dsWarehouse,
     required this.idFlag,
     required this.sumFlagStock,
@@ -28,6 +30,7 @@ class SupplyingWarehouse {
   factory SupplyingWarehouse.fromJson(Map<String, dynamic> json) {
     return SupplyingWarehouse(
       cdWarehouseGroupLabel: json['CD_WAREHOUSE_GROUP_LABEL'] ?? '',
+      cdWarehouse: json['CD_WAREHOUSE'] ?? '',
       dsWarehouse: json['DS_WAREHOUSE'] ?? '',
       idFlag: int.tryParse(json['ID_FLAG'].toString()) ?? 0,
       sumFlagStock: int.tryParse(json['QT_FLAG_STOCK'].toString()) ?? 0,

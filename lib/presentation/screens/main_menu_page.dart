@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'central_warehouse_coverage_page.dart';
 import 'pending_order_page.dart';
+import 'skus_coverage_IPRESS_page.dart';
 
 class MainMenuPage extends StatelessWidget {
   final String userName;
@@ -41,7 +42,12 @@ class MainMenuPage extends StatelessWidget {
               const SizedBox(height: 16),
               _buildOption(context, 'Condición de Compra', Icons.analytics, () {}),
               const SizedBox(height: 16),
-              _buildOption(context, 'Cobertura en la IPRESS', Icons.shopping_cart, () {}),
+              _buildOption(context, 'Cobertura en la IPRESS', Icons.shopping_cart, () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SKUsCoverageIPRESSPage()),
+                );
+              }),
               const SizedBox(height: 16),
               _buildOption(context, 'OC Pendiente de Ingreso', Icons.people, () {
                 Navigator.push(

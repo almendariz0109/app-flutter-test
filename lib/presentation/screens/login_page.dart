@@ -17,12 +17,10 @@ class _LoginPageState extends State<LoginPage> {
   final _authService = AuthService();
   final _userService = UserService();
 
-  bool _isLoading = false;
   bool _obscurePassword = true;
 
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
       final username = _usernameController.text.trim();
       final password = _passwordController.text.trim();
 
@@ -43,7 +41,6 @@ class _LoginPageState extends State<LoginPage> {
       } catch (e) {
         _showMessage(e.toString().replaceFirst("Exception: ", ""));
       } finally {
-        setState(() => _isLoading = false);
       }
     }
   }
