@@ -1,35 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import '../../core/services/skus-coverage-IPRESS.-service.dart';
-import '../../data/models/IPRESS_Data/coverageList.dart';
-import '../../data/models/IPRESS_Data/criterion.dart';
-import '../../data/models/IPRESS_Data/ipress.dart';
-import '../../data/models/IPRESS_Data/ipressDetails.dart';
-import '../../data/models/skus.coverage.lvl.IPRESS.dart';
-import 'ipress/ipress_report_skus.dart';
+import '../../core/services/purchase_ordes_condition_service.dart';
+import '../../data/models/PurcharseData/coverage.criteria.dart';
+import '../../data/models/PurcharseData/purcharse.order.dart';
+import '../../data/models/PurcharseData/supplying.warehouse.dart';
+import '../../data/models/purchase.condition.dart';
+import 'purchase/purchase_order_reports_skus.dart';
 
-class SKUsCoverageIPRESSPage extends StatefulWidget {
-  const SKUsCoverageIPRESSPage({super.key});
+class PurchaseOrdersConditionPage extends StatefulWidget {
+  const PurchaseOrdersConditionPage({super.key});
 
   @override
-  _SKUsCoverageIPRESSPageState createState() => _SKUsCoverageIPRESSPageState();
+  _PurchaseOrdersConditionPageState createState() => _PurchaseOrdersConditionPageState();
 }
 
-class _SKUsCoverageIPRESSPageState extends State<SKUsCoverageIPRESSPage> {
+class _PurchaseOrdersConditionPageState extends State<PurchaseOrdersConditionPage> {
   String? _selectedProductType;
-  final _skusCoverageIPRESSService = SKUsCoverageIPRESSService();
+  final _purchaseOrderConditionService = PurchaseOrdersConditionService();
 
-  List<WarehouseCoverageList> warehouseCoverage = [];
-  List<CoverageCriterion> coverageCriteria = [];
-  List<IPRESSStockData> ipressStockData = [];
-  List<IPRESSDetails> ipressDetailsData = [];
+  List<CoverageCriteria> coverageCriteria = [];
+  List<PurchaseOrder> purchaseOrder = [];
+  List<SupplyingWarehousePurchase> supplyingWarehouse = [];
+  List<PurchaseOrderSKUsReportPage> purchaseSKUsData = [];
 
-  late Future<List<SKUsCoverageIPRESS>> _detailsFuture;
+  late Future<List<PurchaseCondition>> _detailsFuture;
+  String? _selectedCoverage;
+  String? _selectedCurve;
 
-  String _selectedWarehouse = '';
+
   bool isLoading = true;
-  bool _isLoadingIPRESS = false;
+  bool _isLoadingPurchase = false;
   bool isLoadingReport = true;
+
+
+  
 
 
   @override
@@ -38,48 +42,37 @@ class _SKUsCoverageIPRESSPageState extends State<SKUsCoverageIPRESSPage> {
     fetchData();
   }
 
-  Future<void> fetchData({String? cdWarehouseGroupLabel, String? idGroup}) async {
+  Future<void> fetchData({String? idGroup, String? idFlag}) async {
     setState(() => isLoading = true);
-    final data = await _skusCoverageIPRESSService.fetchDashboardData(cdWarehouseGroupLabel: cdWarehouseGroupLabel, idGroup: idGroup);
+    final data = await _purchaseOrderConditionService.fetchDashboardData(idGroup: idGroup, idFlag: idFlag);
     setState(() {
-      warehouseCoverage = data['warehouseCoverage'];
       coverageCriteria = data['coverageCriteria'];
-      ipressStockData = data['ipressStock'];
-      _selectedWarehouse = cdWarehouseGroupLabel ?? '';
+      purchaseOrder = data['purchaseOrder'];
+      supplyingWarehouse = data['supplyingWarehouse'];
       isLoading = false;
-    });
-  }
 
-  Future<void> fetchDataDetails({required String cdWarehouseGroupLabel, required String idFlag, String? idGroup}) async {
-    setState(() => isLoading = true);
-    final data = await _skusCoverageIPRESSService.fetchDashboardIPRESSDetails(cdWarehouseGroupLabel: cdWarehouseGroupLabel, idFlag: idFlag, idGroup: idGroup);
-    setState(() {
-      ipressDetailsData = data['ipressDetailsData'];
-      isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final Color headerBgColor = Colors.indigo;
-    final colorBgDonut =  Color(0xFF34495E);
-    final colorDonut = Color(0xFF9BB0C5);
+    final colorOrder =  Color(0xFF1E942D);
+    final colorWithoutOrder = Color(0xFFFF0000);
 
-    final List<IPRESSStockData> chartData = _selectedWarehouse.isEmpty ? 
-    [
-      IPRESSStockData(
-        cdWarehouseGroupLabel: 'Sin Datos',
-        dsEstab: 'sin datos',
-        qtWarehouseStock: 1,
-        totalStock: 1,
-      )
-    ] : ipressStockData;
+    final bool hayFiltroFlag = 
+      (_selectedCoverage != null && _selectedCoverage != '') ||
+      ((_selectedProductType != null && _selectedProductType != '') &&
+      (_selectedCoverage != null && _selectedCoverage != ''));
+
+
+    print(hayFiltroFlag);
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: headerBgColor,
         title: const Text(
-          'Niveles de Coberturas de SKUs en la IPRESS',
+          'Niveles de Coberturas de SKUs en los Almacenes Suministradores',
           style: TextStyle(color: Colors.white),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
@@ -112,10 +105,10 @@ class _SKUsCoverageIPRESSPageState extends State<SKUsCoverageIPRESSPage> {
                         onChanged: (String? newValue) {
                           setState(() {
                             _selectedProductType = newValue;
-                            warehouseCoverage = [];
+                            _selectedCoverage = null;
+                            purchaseOrder = [];
                             coverageCriteria = [];
-                            ipressStockData = [];
-                            ipressDetailsData = []; // limpiar gráficos IPRESS al cambiar producto
+                            supplyingWarehouse = [];
                             isLoading = true;
                           });
 
@@ -128,16 +121,16 @@ class _SKUsCoverageIPRESSPageState extends State<SKUsCoverageIPRESSPage> {
                         onPressed: () {
                           setState(() {
                             _selectedProductType = null;
-                            warehouseCoverage = [];
+                            purchaseOrder = [];
                             coverageCriteria = [];
-                            ipressStockData = [];
-                            ipressDetailsData = []; // limpiar gráficos IPRESS al limpiar filtros
+                            supplyingWarehouse = [];
+                            _selectedCoverage = null;
                           });
                           fetchData(); // sin filtros
                         },
                         icon: const Icon(Icons.clear),
                         label: const Text('Limpiar Filtros'),
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+                        style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 136, 152, 223), foregroundColor: const Color.fromARGB(242, 7, 7, 7)),
                       ),
                     ],
                   ),
@@ -147,103 +140,84 @@ class _SKUsCoverageIPRESSPageState extends State<SKUsCoverageIPRESSPage> {
                       children: [
                         const SizedBox(height: 20),
                         Text(
-                          'TOTAL: ${ipressStockData.isNotEmpty ? ipressStockData.first.totalStock : 0} SKUs',
+                          'TOTAL SKUs: ${purchaseOrder.fold<int>(0, (sum, item) => sum + item.qtFlagPurchase)}',
                           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 16),
-                        if (_selectedWarehouse.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              '${ipressStockData.first.cdWarehouseGroupLabel} - ${ipressStockData.first.dsEstab}',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
                         SizedBox(
                           height: 300,
                           child: SfCircularChart(
                             legend: Legend(
-                              isVisible: true,
-                              overflowMode: LegendItemOverflowMode.wrap,
-                              position: LegendPosition.bottom,
+                              isVisible: false, // Ocultamos leyenda automática
                             ),
                             annotations: <CircularChartAnnotation>[
                               CircularChartAnnotation(
                                 widget: Text(
-                                  ipressStockData.isEmpty
-                                      ? '0'
-                                      : _selectedWarehouse.isEmpty
-                                          ? '${ipressStockData.first.totalStock}'
-                                          : '${ipressStockData.first.qtWarehouseStock}',
+                                  'Total\n' 
+                                  'SKUs\n${purchaseOrder.fold<int>(0, (sum, item) => sum + item.qtFlagPurchase)}',
+                                  textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                   ),
                                 ),
-
                               ),
                             ],
-                            series: <DoughnutSeries<IPRESSStockData, String>>[
-                              DoughnutSeries<IPRESSStockData, String>(
-                                dataSource: chartData,
-                                xValueMapper: (data, _) => data.cdWarehouseGroupLabel,
-                                yValueMapper: (data, _) => data.qtWarehouseStock,
-                                pointColorMapper: (data, _) => _selectedWarehouse.isEmpty ? colorDonut : colorBgDonut,
-                                dataLabelSettings: const DataLabelSettings(isVisible: false),
+                            series: <DoughnutSeries<PurchaseOrder, String>>[
+                              DoughnutSeries<PurchaseOrder, String>(
+                                dataSource: purchaseOrder,
+                                xValueMapper: (data, _) => data.stPurchaseDesc,
+                                yValueMapper: (data, _) => data.qtFlagPurchase,
+                                pointColorMapper: (data, _) =>
+                                    data.stPurchase == 1 ? colorOrder : colorWithoutOrder,
+                                dataLabelSettings: const DataLabelSettings(isVisible: true),
                                 radius: '80%',
                                 innerRadius: '60%',
                               ),
                             ],
                           ),
                         ),
-
+                        const SizedBox(height: 10),
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 20,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 14,
+                                  height: 14,
+                                  decoration: BoxDecoration(
+                                    color: colorOrder,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                const Text('Con Orden de Compra'),
+                              ],
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 14,
+                                  height: 14,
+                                  decoration: BoxDecoration(
+                                    color: colorWithoutOrder,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                const Text('Sin Orden de Compra'),
+                              ],
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
 
-                  const SizedBox(height: 20),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                      color: Colors.indigo,
-                      child: const Text(
-                        '',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: warehouseCoverage.map((w) {
-                      final bgColor = _hexToColor(w.bgColor);
-                      final textColor = _hexToColor(w.color);
-                      return GestureDetector(
-                        onTap: () => fetchData(cdWarehouseGroupLabel: w.cdWarehouseGroupLabel, idGroup: _selectedProductType),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                          decoration: BoxDecoration(
-                            color: bgColor,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            '${w.cdWarehouseGroupLabel} - ${w.dsEstab}\n'
-                            '            ${w.qtWarehouseStock} SKUs',
-                            style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
 
                   const SizedBox(height: 20),
                     Container(
@@ -263,8 +237,8 @@ class _SKUsCoverageIPRESSPageState extends State<SKUsCoverageIPRESSPage> {
                     SfCartesianChart(
                     margin: const EdgeInsets.all(30),
                     primaryXAxis: CategoryAxis(),
-                    series: <CartesianSeries<CoverageCriterion, String>>[
-                      BarSeries<CoverageCriterion, String>(
+                    series: <CartesianSeries<CoverageCriteria, String>>[
+                      BarSeries<CoverageCriteria, String>(
                         dataSource: coverageCriteria,
                         xValueMapper: (wc, _) => wc.cdCoverage,
                         yValueMapper: (wc, _) => wc.qtFlagStock,
@@ -273,54 +247,52 @@ class _SKUsCoverageIPRESSPageState extends State<SKUsCoverageIPRESSPage> {
                         pointColorMapper: (wc, _) => _hexToColor(wc.idColour1),
                         isTrackVisible: true,
                         onPointTap: (ChartPointDetails details) async {
-                            if (_selectedWarehouse.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Por favor, seleccione un almacén primero.')),
-                              );
-                              return;
-                            }
                           final tappedCoverage = coverageCriteria[details.pointIndex!];
                           final idFlag = tappedCoverage.idFlag.toString();
-                          final cdWarehouseGroupLabel = _selectedWarehouse;
                           final idGroup = _selectedProductType;
+                          debugPrint('idGroup extraído: $idGroup');
+                          debugPrint('idFlag extraído: $idFlag');
 
                           setState(() {
-                            _isLoadingIPRESS = true;
-                            ipressDetailsData = [];
+                            _isLoadingPurchase = true;
+                            supplyingWarehouse = [];
+                            purchaseOrder = [];
+                            _selectedCoverage = idFlag;
                           });
                           try {
-                            List<IPRESSDetails> result = [];
+                            List<SupplyingWarehousePurchase> newSupplyingWarehouse  = [];
+                            List<PurchaseOrder> newPurchaseOrder = [];
 
-                            if (_selectedProductType == null) {
-                              final response = await _skusCoverageIPRESSService.fetchDashboardIPRESSDetails(idFlag: idFlag, cdWarehouseGroupLabel: cdWarehouseGroupLabel);
-                              result = response['ipressDetailsData'] ?? [];
-                            }else {
-                              final response = await _skusCoverageIPRESSService.fetchDashboardIPRESSDetails(idFlag: idFlag, cdWarehouseGroupLabel: cdWarehouseGroupLabel, idGroup: idGroup);
-                              result = response['ipressDetailsData'] ?? [];
-                            }
+                            final response = _selectedProductType == null
+                                ? await _purchaseOrderConditionService.fetchDashboardData(idFlag: idFlag)
+                                : await _purchaseOrderConditionService.fetchDashboardData(idFlag: idFlag, idGroup: idGroup);
+
+                            newSupplyingWarehouse = response['supplyingWarehouse'] ?? [];
+                            newPurchaseOrder = response['purchaseOrder'] ?? [];
                             
                               setState(() {
-                                ipressDetailsData = result;
+                                supplyingWarehouse = newSupplyingWarehouse;
+                                purchaseOrder = newPurchaseOrder;
                               });
                           } catch (e) {
-                            debugPrint('Error cargando detalle de IPRESS: $e');
+                            debugPrint('Error cargando almacenes suministradores y ordenes de compra: $e');
                           } finally {
                             setState(() {
-                              _isLoadingIPRESS = false;
+                              _isLoadingPurchase = false;
                             });
                           }
                         }
                       )
                     ],
                   ),
-                  if (ipressDetailsData.isNotEmpty) ...[
+                  if (supplyingWarehouse.isNotEmpty) ...[
                     const SizedBox(height: 20),
                     Container(
                       alignment: Alignment.centerLeft,
                       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                       color: Colors.indigo,
                       child: const Text(
-                        'IPRESS',
+                        'Almacenes Suministradores',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -332,23 +304,29 @@ class _SKUsCoverageIPRESSPageState extends State<SKUsCoverageIPRESSPage> {
                     Wrap(
                       spacing: 16,
                       runSpacing: 16,
-                      children: ipressDetailsData.map((ipressDetail) {
+                      children: supplyingWarehouse.map((supplyingWarehouseDetails) {
+                        debugPrint('== DEBUG VALORES DONA ==');
+                        debugPrint('qtWarehouseStock: ${supplyingWarehouseDetails.qtWarehouseStock}');
+                        debugPrint('qtFlagPurchase: ${supplyingWarehouseDetails.qtFlagPurchase}');
+                        debugPrint('idFlag: $_selectedCoverage');
+                        debugPrint('idGroup: $_selectedProductType');
+                        debugPrint('hayFiltroFlag: $hayFiltroFlag');
                         return SizedBox(
                           width: MediaQuery.of(context).size.width / 2 - 24, // dos por fila
                           child: Column(
                             children: [
                               Text(
-                                ipressDetail.cdWarehouse,
+                                supplyingWarehouseDetails.cdWarehouseGroupLabel,
                                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                ipressDetail.dsWarehouse,
+                                supplyingWarehouseDetails.dsWarehouse,
                                 style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                '(${ipressDetail.qtWarehouseStock} SKUs)',
+                                '(${supplyingWarehouseDetails.qtWarehouseStock} SKUs)',
                                 style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center,
                               ),
@@ -358,7 +336,9 @@ class _SKUsCoverageIPRESSPageState extends State<SKUsCoverageIPRESSPage> {
                                   annotations: <CircularChartAnnotation>[
                                     CircularChartAnnotation(
                                       widget: Text(
-                                        '${ipressDetail.qtFlagStock}',
+                                        hayFiltroFlag
+                                            ? '${supplyingWarehouseDetails.qtFlagPurchase}'
+                                            : '${supplyingWarehouseDetails.qtWarehouseStock}',
                                         style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -371,23 +351,34 @@ class _SKUsCoverageIPRESSPageState extends State<SKUsCoverageIPRESSPage> {
                                   series: <DoughnutSeries<_DoughnutData, String>>[
                                     DoughnutSeries<_DoughnutData, String>(
                                       dataSource: [
-                                        _DoughnutData('Stock', ipressDetail.qtFlagStock),
-                                        _DoughnutData('Restante', ipressDetail.qtWarehouseStock - ipressDetail.qtFlagStock),
+                                        _DoughnutData('Stock', supplyingWarehouseDetails.qtFlagPurchase0),
+                                        _DoughnutData('Restante', supplyingWarehouseDetails.qtFlagPurchase1),
                                       ],
                                       xValueMapper: (d, _) => d.label,
                                       yValueMapper: (d, _) => d.value,
                                       pointColorMapper: (d, i) => i == 0
-                                          ? _hexToColor(ipressDetail.idColour1)
-                                          : _hexToColor(ipressDetail.idColour2),
+                                          ? _hexToColor(supplyingWarehouseDetails.idColour2)
+                                          : _hexToColor(supplyingWarehouseDetails.idColour1),
                                       radius: '80%',
                                       innerRadius: '60%',
                                       dataLabelSettings: const DataLabelSettings(isVisible: false),
                                       onPointTap: (ChartPointDetails details) async {
                                         setState(() => isLoadingReport = true);
+                                        final stPurcharse = details.pointIndex == 0 ? 0 : 1;
+                                        final idGroup = _selectedProductType;
+                                        final idFlag = _selectedCoverage;
+                                        final curve = _selectedCurve;
+                                        debugPrint('idGroup extraído: $idGroup');
+                                        debugPrint('idFlag extraído: $idFlag');
+                                        debugPrint('curve extraído: $curve');
+                                        
                                         try {
-                                          final reports = await _skusCoverageIPRESSService.fetchSKUsReportsxCoverage(
-                                            cdWarehouse: ipressDetail.cdWarehouse,
-                                            idFlag: ipressDetail.idFlag.toString(),
+                                          final reports = await _purchaseOrderConditionService.fetchSKUsReportsxCoverage(
+                                            stPurcharse: stPurcharse.toString(),
+                                            cdWarehouseGroupLabel: supplyingWarehouseDetails.cdWarehouseGroupLabel,
+                                            curve: _selectedCurve,
+                                            idFlag: _selectedCoverage?.toString(),
+                                            idGroup: _selectedProductType?.toString(),
                                           );
 
                                           if (reports.isEmpty) {
@@ -402,10 +393,20 @@ class _SKUsCoverageIPRESSPageState extends State<SKUsCoverageIPRESSPage> {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => IPRESSReportPage(reports: reports),
+                                              builder: (context) => PurchaseOrderSKUsReportPage(
+                                                reports: reports, 
+                                                stPurcharse: stPurcharse.toString(),
+                                                cdWarehouseGroupLabel: supplyingWarehouseDetails.cdWarehouseGroupLabel,
+                                                idFlag: _selectedCoverage?.toString(),
+                                                idGroup: _selectedProductType?.toString(),
+                                                curve: _selectedCurve,
+                                                ),
                                             ),
                                           );
-                                        } catch (e) {
+                                        } catch (e, stackTrace) {
+                                          debugPrint('❌ Error al obtener el detalle: $e');
+                                          debugPrint('🧵 StackTrace: $stackTrace');
+
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             const SnackBar(content: Text('Error al obtener el detalle')),
                                           );
@@ -413,6 +414,7 @@ class _SKUsCoverageIPRESSPageState extends State<SKUsCoverageIPRESSPage> {
                                           setState(() => isLoadingReport = false);
                                         }
                                       },
+
                                     )
                                   ],
                                 ),

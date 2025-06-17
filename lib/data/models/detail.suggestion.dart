@@ -3,6 +3,7 @@ class SuggestionDetail {
   final String desProd;
   final String cdPurchaseOrderAsc;
   final String dtEndAsc;
+  final int idGroup;
   final String desCdGroup;
   final String cdGroupAsc;
   final int idFlag;
@@ -14,7 +15,7 @@ class SuggestionDetail {
   final String descStPurchase;
   final String cdMu;
   final int qtPurchaseProduct;
-  final String qtSuggestionEnd;
+  final int qtSuggestionEnd;
   final int qtPurchaseOrders;
 
   SuggestionDetail({
@@ -22,6 +23,7 @@ class SuggestionDetail {
     required this.desProd,
     required this.cdPurchaseOrderAsc,
     required this.dtEndAsc,
+    required this.idGroup,
     required this.desCdGroup,
     required this.cdGroupAsc,
     required this.idFlag,
@@ -43,19 +45,20 @@ class SuggestionDetail {
       desProd: json['DS_PRODUCT'] ?? '',
       cdPurchaseOrderAsc: json['CD_PURCHASE_ORDER_ASC'] ?? '',
       dtEndAsc: json['DT_END_ASC'] ?? '',
+      idGroup: int.tryParse(json['ID_GROUP'].toString()) ?? 0,
       desCdGroup: json['DESC_CD_GROUP'] ?? '',
       cdGroupAsc: json['CD_GROUP_ASC'] ?? '',
-      idFlag: json['ID_FLAG'] ?? 0,
+      idFlag: int.tryParse(json['ID_FLAG'].toString()) ?? 0,
       cdCoverage: json['CD_COVERAGE'] ?? '',
       cdWarehouseGroupLabel: json['CD_WAREHOUSE_GROUP_LABEL'] ?? '',
-      stPurchase: json['ST_PURCHASE'] ?? 0,
+      stPurchase: int.tryParse(json['ST_PURCHASE'].toString()) ?? 0,
       curveXyz: json['CURVE_XYZ'] ?? '',
       descCurveXyz: json['DESC_CURVE_XYZC'] ?? '',
       descStPurchase: json['DESC_ST_PURCHASE'] ?? '',
       cdMu: json['CD_MU'] ?? '',
-      qtPurchaseProduct: json['QT_PURCHASE_PRODUCT'] ?? 0,
-      qtSuggestionEnd: json['QT_SUGGESTION_END'] ?? '',
-      qtPurchaseOrders: json['QT_PURCHASE_ORDERS'] ?? 0
+      qtPurchaseProduct: int.tryParse(json['QT_PURCHASE_PRODUCT'].toString()) ?? 0,
+      qtSuggestionEnd: int.tryParse(json['QT_SUGGESTION_END'].toString()) ?? 0,
+      qtPurchaseOrders: int.tryParse(json['QT_PURCHASE_ORDERS'].toString()) ?? 0,
     );
   }
 }

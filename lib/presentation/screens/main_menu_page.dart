@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'central_warehouse_coverage_page.dart';
 import 'pending_order_page.dart';
+import 'purchase_orders_condition_page.dart';
 import 'skus_coverage_IPRESS_page.dart';
 
 class MainMenuPage extends StatelessWidget {
@@ -40,7 +41,12 @@ class MainMenuPage extends StatelessWidget {
                 );
               }),
               const SizedBox(height: 16),
-              _buildOption(context, 'Condición de Compra', Icons.analytics, () {}),
+              _buildOption(context, 'Condición de Compra', Icons.analytics, () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => PurchaseOrdersConditionPage()),
+                );
+              }),
               const SizedBox(height: 16),
               _buildOption(context, 'Cobertura en la IPRESS', Icons.shopping_cart, () {
                 Navigator.push(
