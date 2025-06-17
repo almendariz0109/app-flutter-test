@@ -58,20 +58,19 @@ class _PurchaseOrderSKUsState extends State<PurchaseOrderSKUsReportPage> {
     setState(() {
       _reportsFilteredByCurve = data;
       isLoading = false;
-      // Podrías actualizar los reports si quieres que se vean los nuevos datos
-      // _reportsFilteredByCurve = data;
+
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Filtrado por codItemPk
+
     final filteredReports = _reportsFilteredByCurve.where((s) =>
       s.codProd.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reporte de SKUs Con Ordenes de Compra'),
+        title: Text('Reporte de SKUs ${widget.stPurcharse == '1' ? 'Con' : 'Sin'} Ordenes de Compra'),
         centerTitle: true,
         foregroundColor: Colors.white,
         backgroundColor: Colors.indigo,
@@ -110,7 +109,7 @@ class _PurchaseOrderSKUsState extends State<PurchaseOrderSKUsReportPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0), // Padding izquierdo y derecho
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: DropdownButton<String>(
               hint: const Text('Selecciona un tipo'),
               value: _selectedCurve,
