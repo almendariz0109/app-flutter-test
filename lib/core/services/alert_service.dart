@@ -4,15 +4,15 @@ import '../../data/models/detail.suggestion.dart';
 import '../../data/models/suggestion.dart';
 
 class AlertService {
-  final String baseUrl = 'http://localhost:3000/api'; // Emulador Web local
-  // final String baseUrl = 'http://192.168.8.172:3000/api'; // Emulador Android
+  // final String baseUrl = 'http://localhost:3000/api'; // Emulador Web local
+  final String baseUrl = 'http://192.168.8.193:8080/api'; // Emulador Android
 
   Future<List<Suggestion>> fetchSuggestions({
     required String months,
     required String product,
     String curve = '',
   }) async {
-    final uri = Uri.parse('$baseUrl/alerts')
+    final uri = Uri.parse('$baseUrl/alert/alerts')
         .replace(queryParameters: {
           'months': months,
           'product': product,
@@ -34,7 +34,7 @@ class AlertService {
   Future<List<SuggestionDetail>> fetchDetails({
     required String codProd,
   }) async {
-    final uri = Uri.parse('$baseUrl/alerts/details')
+    final uri = Uri.parse('$baseUrl/alert/alerts/details')
         .replace(queryParameters: {
           'codeItem': codProd,
         });

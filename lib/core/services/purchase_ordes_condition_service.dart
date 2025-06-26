@@ -7,10 +7,11 @@ import '../../data/models/PurcharseData/supplying.warehouse.dart';
 import '../../data/models/detail.suggestion.dart';
 
 class PurchaseOrdersConditionService {
-  final String baseUrl = 'http://localhost:3000/api'; // Cambia si usas Android
+  //final String baseUrl = 'http://localhost:3000/api'; // Cambia si usas Android
+  final String baseUrl = 'http://192.168.8.193:8080/api';
 
   Future<Map<String, dynamic>> fetchDashboardData({String? idGroup, String? idFlag }) async {
-    final uri = Uri.parse('$baseUrl/purcharseCondition').replace(queryParameters: {
+    final uri = Uri.parse('$baseUrl/purcharse/purcharseCondition').replace(queryParameters: {
       if (idFlag != null) 'idFlag': idFlag,
       if (idGroup != null) 'idGroup': idGroup,
     });
@@ -45,7 +46,7 @@ class PurchaseOrdersConditionService {
   }
 
   Future<List<SuggestionDetail>> fetchSKUsReportsxCoverage({required String stPurcharse, required String cdWarehouseGroupLabel, String? curve, String? idFlag, String? idGroup}) async {
-    final url = Uri.parse('$baseUrl/purcharseCondition/purcharseSKUsReport')
+    final url = Uri.parse('$baseUrl/purcharse/purcharseCondition/purcharseSKUsReport')
         .replace(queryParameters: {
           'stPurcharse': stPurcharse,
           'cdWarehouseGroupLabel': cdWarehouseGroupLabel,

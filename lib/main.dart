@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'data/models/user.dart';
 import 'presentation/screens/login_page.dart';
 import 'presentation/screens/home_page.dart'; // O el que sea tu página principal
 
@@ -25,12 +27,26 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _checkLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? login = prefs.getString('login');
+    String? userJson = prefs.getString('user');
 
-    setState(() {
-      _initialPage = login != null ? HomePage(login: '', name: '') : const LoginPage();
-    });
+    if (userJson != null) {
+      final userMap = jsonDecode(userJson);
+      final user = User.fromJson(userMap);
+
+      setState(() {
+        _initialPage = HomePage(
+          login: user.id,
+          name: user.name,
+          applications: user.applications,
+        );
+      });
+    } else {
+      setState(() {
+        _initialPage = const LoginPage();
+      });
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {

@@ -7,10 +7,11 @@ import '../../data/models/IPRESS_Data/ipressDetails.dart';
 import '../../data/models/supplying.warehouse.dart';
 
 class SKUsCoverageIPRESSService {
-  final String baseUrl = 'http://localhost:3000/api'; // Cambia si usas Android
+  //final String baseUrl = 'http://localhost:3000/api'; // Cambia si usas Android
+  final String baseUrl = 'http://192.168.8.193:8080/api';
 
   Future<Map<String, dynamic>> fetchDashboardData({String? cdWarehouseGroupLabel, String? idGroup }) async {
-    final uri = Uri.parse('$baseUrl/skusCoverageLvlIPRESS').replace(queryParameters: {
+    final uri = Uri.parse('$baseUrl/skusCoverage/skusCoverageLvlIPRESS').replace(queryParameters: {
       if (cdWarehouseGroupLabel != null) 'cdWarehouseGroupLabel': cdWarehouseGroupLabel,
       if (idGroup != null) 'idGroup': idGroup,
     });
@@ -45,7 +46,7 @@ class SKUsCoverageIPRESSService {
   }
 
   Future<Map<String, dynamic>> fetchDashboardIPRESSDetails({required String cdWarehouseGroupLabel, required String idFlag, String? idGroup}) async {
-    final uri = Uri.parse('$baseUrl/skusCoverageLvlIPRESS/IPRESSDetails').replace(queryParameters: {
+    final uri = Uri.parse('$baseUrl/skusCoverage/skusCoverageLvlIPRESS/IPRESSDetails').replace(queryParameters: {
       'idFlag': idFlag,
       'cdWarehouseGroupLabel': cdWarehouseGroupLabel,
       if (idGroup != null) 'idGroup': idGroup,
@@ -71,7 +72,7 @@ class SKUsCoverageIPRESSService {
   }
 
     Future<List<SupplyingWarehouse>> fetchSKUsReportsxCoverage({required String idFlag, required String cdWarehouse}) async {
-    final url = Uri.parse('$baseUrl/skusCoverageLvlIPRESS/SKUsReportsByCoverage')
+    final url = Uri.parse('$baseUrl/skusCoverage/skusCoverageLvlIPRESS/SKUsReportsByCoverage')
         .replace(queryParameters: {
           'idFlag': idFlag,
           'cdWarehouse': cdWarehouse,

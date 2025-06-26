@@ -4,11 +4,11 @@ import '../../data/models/supplying.warehouse.dart';
 import '../../data/models/warehouse.coverage.dart';
 
 class WareHouseService {
-  final String baseUrl = 'http://localhost:3000/api'; // Emulador Web Local
-  //final String baseUrl = 'http://192.168.8.172:3000/api'; // Emulador Android
+  //final String baseUrl = 'http://localhost:3000/api'; // Emulador Web Local
+  final String baseUrl = 'http://192.168.8.193:8080/api'; // Emulador Android
 
   Future<List<WarehouseCoverage>> fetchWarehouseCoverage() async {
-    final uri = Uri.parse('$baseUrl/warehouseCoverage');
+    final uri = Uri.parse('$baseUrl/warehouse/warehouseCoverage');
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
@@ -22,7 +22,7 @@ class WareHouseService {
   }
 
   Future<List<WarehouseCoverage>> fetchCoverageByProduct({String? idGroup}) async {
-    final uri = Uri.parse('$baseUrl/warehouseCoverage/coverageByProduct')
+    final uri = Uri.parse('$baseUrl/warehouse/warehouseCoverage/coverageByProduct')
             .replace(queryParameters: {
               'idGroup': idGroup,
         });
@@ -38,7 +38,7 @@ class WareHouseService {
   }
 
   Future<List<SupplyingWarehouse>> fetchSupplyingWarehouse({String? idFlag}) async {
-    final uri = Uri.parse('$baseUrl/warehouseCoverage/supplyingWarehouse')
+    final uri = Uri.parse('$baseUrl/warehouse/warehouseCoverage/supplyingWarehouse')
             .replace(queryParameters: {
           'idFlag': idFlag,
         });
@@ -56,7 +56,7 @@ class WareHouseService {
   }
 
   Future<List<SupplyingWarehouse>>  fetchSupplyingWarehousexTypeProduct({String? idGroup, String? idFlag}) async {
-    final uri = Uri.parse('$baseUrl/warehouseCoverage/supplyingWarehouseByProduct')
+    final uri = Uri.parse('$baseUrl/warehouse/warehouseCoverage/supplyingWarehouseByProduct')
         .replace(queryParameters: {
           'idGroup': idGroup,
           'idFlag' : idFlag
@@ -73,7 +73,7 @@ class WareHouseService {
   }
 
   Future<List<SupplyingWarehouse>> fetchSKUsReportsxCoverage({String? idFlag, String? cdWarehouseGroupLabel}) async {
-    final url = Uri.parse('$baseUrl/warehouseCoverage/SKUsReportsByCoverage')
+    final url = Uri.parse('$baseUrl/warehouse/warehouseCoverage/SKUsReportsByCoverage')
         .replace(queryParameters: {
           'idFlag': idFlag,
           'cdWarehouseGroupLabel': cdWarehouseGroupLabel,

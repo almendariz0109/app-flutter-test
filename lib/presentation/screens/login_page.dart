@@ -26,14 +26,17 @@ class _LoginPageState extends State<LoginPage> {
 
       try {
         final user = await _authService.login(username, password);
-        print("Usuario logueado: ${user?.id}");
         if (user != null) {
         final userFull = await _userService.fetchUserDetails(user.id);   
-        print("Nombre de usuario: ${userFull?.name}");   
-          if (!mounted) return;
-          // Ir a la pantalla principal
+        if (!mounted) return;
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => HomePage(login: userFull!.id, name: userFull.name)),
+            MaterialPageRoute(
+              builder: (_) => HomePage(
+                login: userFull!.id,
+                name: userFull.name,
+                applications: user.applications,
+              ),
+            ),
           );
         } else {
           _showMessage('Credenciales incorrectas');
